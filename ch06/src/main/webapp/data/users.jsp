@@ -10,9 +10,9 @@
 <%@page import="entity.User1"%>
 <%@ page contentType="application/json;charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-
+	
 	List<User1> users = new ArrayList<>();
-
+	
 	try {
 		Context ctx = (Context) new InitialContext().lookup("java:comp/env");
 		DataSource ds = (DataSource) ctx.lookup("jdbc/studydb");
