@@ -43,17 +43,17 @@ public class UserDAO extends DBHelper {
 		
 		int count = 0;
 		
-		//String 불변성을 고려해 StringBuilder로 동적 SQL 생성
+		// String 불변성을 고려해 StringBuilder로 동적 SQL 생성 
 		StringBuilder sql = new StringBuilder(SQL.SELECT_COUNT_USER);
 		
 		if(type.equals("uid")) {
-			sql.append(SQL.SELECT_WHERE_UID);
+			sql.append(SQL.WHERE_UID);
 		}else if(type.equals("nick")) {
-			sql.append(SQL.SELECT_WHERE_NICK);
+			sql.append(SQL.WHERE_NICK);
 		}else if(type.equals("email")) {
-			sql.append(SQL.SELECT_WHERE_EMAIL);
-		}else if(type.equals("hp")){
-			sql.append(SQL.SELECT_WHERE_HP);
+			sql.append(SQL.WHERE_EMAIL);
+		}else if(type.equals("hp")) {
+			sql.append(SQL.WHERE_HP);
 		}
 		
 		try {
@@ -61,18 +61,15 @@ public class UserDAO extends DBHelper {
 			psmt = conn.prepareStatement(sql.toString());
 			psmt.setString(1, value);
 			
-			rs= psmt.executeQuery();
+			rs = psmt.executeQuery();
 			if(rs.next()) {
 				count = rs.getInt(1);
 			}
-			
 			closeAll();
 			
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
-		
 		return count;
 	}
 	

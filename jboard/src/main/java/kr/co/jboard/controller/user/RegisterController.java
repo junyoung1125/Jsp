@@ -40,7 +40,7 @@ public class RegisterController extends HttpServlet {
 		String zip = req.getParameter("zip");
 		String addr1 = req.getParameter("addr1");
 		String addr2 = req.getParameter("addr2");
-		String regip = req.getRemoteAddr();	//클라이언트 IP번호
+		String regip = req.getRemoteAddr(); // 클라이언트 IP번호
 		
 		// DTO 생성
 		UserDTO dto = new UserDTO();
@@ -62,3 +62,5 @@ public class RegisterController extends HttpServlet {
 		resp.sendRedirect("/jboard/user/login.do");
 	}
 }
+
+
