@@ -1,6 +1,7 @@
 package kr.co.jboard.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,11 @@ public enum FileService {
 	
 	
 	// 파일 업로드
-	public void uploadFile(HttpServletRequest req) {
+	public List<FileDTO> uploadFile(HttpServletRequest req) {
+		
+		List<FileDTO> files = new ArrayList<FileDTO>();
+		
+		
 		
 		// 파일 업로드 경로 구하기
 		ServletContext ctx = req.getServletContext();
@@ -58,8 +63,8 @@ public enum FileService {
 				// 파일명 추출
 				String oName = part.getSubmittedFileName();
 				
-				
-				if(oName != null) {
+				//파일을 첨부했으면
+				if(oName != null && !oName.isEmpty()) {
 
 					// 고유 파일명 생성
 					int idx = oName.lastIndexOf(".");
@@ -68,6 +73,13 @@ public enum FileService {
 
 					// 파일 저장
 					part.write(uploadPath + File.separator + sName);
+					
+					// FileDTO 객체 생성
+					FileDTO dto = new FileDTO();
+					dto.setoName(oName);
+					dto.setsName(sName);
+					
+					files.add(dto);
 				}
 				
 			}
@@ -75,6 +87,10 @@ public enum FileService {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		return files;
+		
 	}
 	
 	
