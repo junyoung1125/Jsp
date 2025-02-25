@@ -13,57 +13,52 @@ import kr.co.jboard.dto.ArticleDTO;
 import kr.co.jboard.dto.PageGroupDTO;
 import kr.co.jboard.service.ArticleService;
 
-@WebServlet("/article/list.do")
-public class ListController extends HttpServlet {
-	private static final long serialVersionUID = 1271262765653325736L;
-	
+@WebServlet("/article/search.do")
+public class SearchController extends HttpServlet {
+	private static final long serialVersionUID = 4384445431360960261L;
+
 	private ArticleService service = ArticleService.INSTANCE;
-	/* 
-		샘플 데이터 채우기
-		INSERT INTO `article` (`title`, `content`, `writer`, `regip`, `wdate`) 
-		SELECT `title`, `content`, `writer`, `regip`, `wdate` FROM `article`;
-	*/
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		// pg 데이터 수신
+		// 데이터 수신
 		String pg = req.getParameter("pg");
+		String searchType = req.getParameter("searchType");
+		String keyword = req.getParameter("keyword");
 		
-		// 전체 게시물 갯수 구하기
-		int total = service.getCountArticle();
+		// DTO 생성
+		ArticleDTO dto = new ArticleDTO();
+		dto.setSearchType(searchType);
+		dto.setKeyword(keyword);
 		
-		// 마지막 페이지 번호 구하기
+		// 페이징 처리 관련 서비스 호출
+		int total = service.getCountArticleBySearch(dto);
 		int lastPageNum = service.getLastPageNum(total);
-		
-		// 현재 페이지 번호 구하기
-		int currentPage = service.getCurrentPage(pg);
-		
-		// LIMIT용 start
+		int currentPage = service.getCurrentPage(pg);		
 		int start = service.getStartNum(currentPage);
 		
-		// 페이지 그룹 구하기
 		PageGroupDTO pageGroupDTO = service.getCurrentPageGroup(currentPage, lastPageNum);
-		
-		// 페이지 시작번호 구하기
 		int pageStartNum = service.getPageStartNum(total, currentPage);
 		
-		// 글목록 데이터 조회
-		List<ArticleDTO> articles = service.findAllArticle(start);
-		
+		// 서비스 호출
+		List<ArticleDTO> articles = service.searchAllArticle(dto, start);
+						
 		// 데이터 참조 공유
 		req.setAttribute("articles", articles);
 		req.setAttribute("currentPage", currentPage);
 		req.setAttribute("lastPageNum", lastPageNum);
 		req.setAttribute("pageStartNum", pageStartNum);
 		req.setAttribute("pageGroupDTO", pageGroupDTO);
+		req.setAttribute("searchType", searchType);
+		req.setAttribute("keyword", keyword);
 		
-		// View forward
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/article/list.jsp");
-		dispatcher.forward(req, resp);
+		// View 포워드
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/article/searchList.jsp");
+		dispatcher.forward(req, resp);	
 	}
-
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	}
+	
 }
